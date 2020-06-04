@@ -5,10 +5,7 @@ import com.jellyfishmix.utilsforspringboot.utils.ResultVOUtil;
 import com.jellyfishmix.utilsforspringboot.vo.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ZSetOperations;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
@@ -23,13 +20,13 @@ public class RedisController {
     private RedisService redisService;
 
     /**
-     * 测试redis记录HotKey
+     * 测试redis记录keyword
      *
      * @param keyword 搜索关键词
      * @return
      */
-    @GetMapping("/test_hot_key")
-    public ResultVO testHotKey(@RequestParam("keyword") String keyword) {
+    @GetMapping("/test_search")
+    public ResultVO testSearch(@RequestParam("keyword") String keyword) {
         redisService.searchZincrby(keyword);
         return ResultVOUtil.success(1, "test-return");
     }
@@ -38,13 +35,26 @@ public class RedisController {
      * 测试redis查询指定范围的热词
      *
      * @param start 查询范围开始位置
-     * @param end 结束位置
+     * @param end 查询范围结束位置
      * @return
      */
-    @GetMapping("/test_query_top_hot_key")
-    public ResultVO testQueryTopHotKey(@RequestParam("start") Integer start,
-                                       @RequestParam("end") Integer end) {
-        Set<ZSetOperations.TypedTuple<String>> resultSet =  redisService.queryTopSearchHotKey(start, end);
+    @GetMapping("/test_query_top_search_hot_word")
+    public ResultVO testQueryTopSearchHotWord(@RequestParam("start") Integer start,
+                                              @RequestParam("end") Integer end) {
+        Set<ZSetOperations.TypedTuple<String>> resultSet =  redisService.queryTopSearchHotWord(start, end);
         return ResultVOUtil.success(1, "success", resultSet);
     }
+
+    /**
+     * 删除指定的key
+     *
+     * @param keyName keyName
+     * @return
+     */
+    @PostMapping("/delete_key")
+    public ResultVO deleteKey(@RequestParam("keyName") String keyName) {
+        redisService.deleteKey(keyName);
+        return ResultVOUtil.success(1, "test-return");
+    }
+
 }

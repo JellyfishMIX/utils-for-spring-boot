@@ -30,6 +30,13 @@ public interface RedisService {
      * @param end 结束位置
      * @return
      */
-    Set<ZSetOperations.TypedTuple<String>> queryTopSearchHotKey(Integer start, Integer end);
+    Set<ZSetOperations.TypedTuple<String>> queryTopSearchHotWord(Integer start, Integer end);
+
+    /**
+     * 删除指定的key
+     *
+     * @param keyName keyName
+     */
+    void deleteKey(String keyName);
 
 }
